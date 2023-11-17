@@ -16,6 +16,7 @@
 
 #include QMK_KEYBOARD_H
 
+#include "keymap_japanese.h"
 #ifdef AUDIO_ENABLE
 #    include "muse.h"
 #endif
@@ -24,16 +25,13 @@ enum planck_layers {
   _QWERTY,
   _LOWER,
   _RAISE,
+  _FN,
   _ADJUST
 };
 
 enum planck_keycodes {
-  QWERTY = SAFE_RANGE,
-  BACKLIT
+  BACKLIT = SAFE_RANGE
 };
-
-#define LOWER MO(_LOWER)
-#define RAISE MO(_RAISE)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -45,14 +43,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |Enter |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Brite| Esc  | GUI  | Alt  |Lower |    Space    |Raise | Left | Down |  Up  |Right |
+ * | Fn   | Esc  | GUI  | Alt  |Lower |    Space    |Raise |      |      |      |      |
  * `-----------------------------------------------------------------------------------'
  */
 [_QWERTY] = LAYOUT_planck_grid(
     KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_LCTL, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT ,
-    BACKLIT, KC_ESC,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT
+    MO(_FN), KC_ESC,  KC_LGUI, KC_LALT, LT(_LOWER,JP_MHEN), KC_SPC, KC_SPC, LT(_RAISE,JP_HENK), _______, _______, _______, _______
 ),
 
 /* Lower
@@ -89,6 +87,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLS,
     _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_NUHS, KC_NUBS, KC_PGUP, KC_PGDN, _______,
     _______, KC_DEL,  _______, _______, _______, _______, _______, _______, KC_MNXT, KC_VOLD, KC_VOLU, KC_MPLY
+),
+
+/* Fn
+ * ,-----------------------------------------------------------------------------------.
+ * |      |      |      |      |      |      |      |      | PSCR | SCRL | PAUS | Del  |
+ * |------+------+------+------+------+-------------+------+------+------+------+------|
+ * |      |      |      |      |      |      |   *  |   /  | Home | Pg Up|      |      |
+ * |------+------+------+------+------+------|------+------+------+------+------+------|
+ * |      |      |      |      |      |      |   +  |   -  | End  | Pg Dn| Up   |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |      |      |      |      |      |             |      |      | Left | Down |Right |
+ * `-----------------------------------------------------------------------------------'
+ */
+[_FN] = LAYOUT_planck_grid(
+  _______, _______, _______, _______, _______, _______, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS, KC_DEL,
+  _______, _______, _______, _______, _______, _______, KC_PAST, KC_PSLS, KC_HOME, KC_PGUP, _______, _______,
+  _______, _______, _______, _______, _______, _______, KC_PPLS, KC_PMNS, KC_END,  KC_PGDN, KC_UP,   _______,
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_RGHT
 ),
 
 /* Adjust (Lower + Raise)
@@ -236,12 +252,12 @@ void matrix_scan_user(void) {
 #endif
 }
 
-bool music_mask_user(uint16_t keycode) {
-  switch (keycode) {
-    case RAISE:
-    case LOWER:
-      return false;
-    default:
-      return true;
-  }
-}
+//bool music_mask_user(uint16_t keycode) {
+//  switch (keycode) {
+//    case RAISE:
+//    case LOWER:
+//      return false;
+//    default:
+//      return true;
+//  }
+//}
